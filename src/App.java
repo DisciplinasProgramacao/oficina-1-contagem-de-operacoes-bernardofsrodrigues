@@ -3,122 +3,116 @@ import java.util.function.Consumer;
 import sorts.Bubblesort;
 import java.util.Arrays;
 
-/** 
- * MIT License
- *
- * Copyright(c) 2024-255 João Caram <caram@pucminas.br>
- *                       Eveline Alonso Veloso
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 public class App {
     static int[] tamanhosTesteGrande =  { 500_000, 1_000_000, 2_000_000, 3_000_000, 5_000_000, 10_000_000 };
-    static int[] tamanhosTesteMedio =   {  12_500,  25_000,  50_000,   100_000,   200_000 };
-    static int[] tamanhosTestePequeno = {       3,       6,      12,        24,        48 };
+    static int[] tamanhosTesteMedio =   { 12_500,  25_000,  50_000,   100_000,   200_000 };
+    static int[] tamanhosTestePequeno = { 3, 6, 12, 24, 48 };
     static Random aleatorio = new Random(42);
 
-    /**
-     * Código de teste 1. Este método...
-     * @param vetor Vetor com dados para teste.
-     * @return Uma resposta que significa....
-     */
+    static int operacoesCodigo1 = 0;
+    static int operacoesCodigo2 = 0;
+    static int operacoesCodigo3 = 0;
+    static int operacoesCodigo4 = 0;
+
+    static long tempoCodigo1 = 0;
+    static long tempoCodigo2 = 0;
+    static long tempoCodigo3 = 0;
+    static long tempoCodigo4 = 0;
+
     static int codigo1(int[] vetor) {
         int resposta = 0;
+        operacoesCodigo1 = 0;
+        long startTime = System.nanoTime();
         for (int i = 0; i < vetor.length; i += 2) {
-            resposta += vetor[i]%2;
+            resposta += vetor[i] % 2;
+            operacoesCodigo1++;
         }
+        tempoCodigo1 = System.nanoTime() - startTime;
         return resposta;
     }
 
-    /**
-     * Código de teste 2. Este método...
-     * @param vetor Vetor com dados para teste.
-     * @return Uma resposta que significa....
-     */
     static int codigo2(int[] vetor) {
         int contador = 0;
+        operacoesCodigo2 = 0;
+        long startTime = System.nanoTime();
         for (int k = (vetor.length - 1); k > 0; k /= 2) {
             for (int i = 0; i <= k; i++) {
                 contador++;
+                operacoesCodigo2++;
             }
-
         }
+        tempoCodigo2 = System.nanoTime() - startTime;
         return contador;
     }
 
-    /**
-     * Código de teste 3. Este método...
-     * @param vetor Vetor com dados para teste.
-     */
     static int codigo3(int[] vetor) {
+        operacoesCodigo3 = 0;
+        long startTime = System.nanoTime();
         for (int i = 0; i < vetor.length - 1; i++) {
             int menor = i;
             for (int j = i + 1; j < vetor.length; j++) {
-                if (vetor[j] < vetor[menor])
-                    menor = j;
+                if (vetor[j] < vetor[menor]) menor = j;
+                operacoesCodigo3++;
             }
             int temp = vetor[i];
             vetor[i] = vetor[menor];
             vetor[menor] = temp;
         }
-
+        tempoCodigo3 = System.nanoTime() - startTime;
         return 0;
     }
 
-    /**
-     * Código de teste 4 (recursivo). Este método...
-     * @param n Ponto inicial do algoritmo
-     * @return Um inteiro que significa...
-     */
     static int codigo4(int n) {
+        operacoesCodigo4 = 0;
+        long startTime = System.nanoTime();
         if (n <= 2)
             return 1;
-        else
+        else {
+            operacoesCodigo4++;
             return codigo4(n - 1) + codigo4(n - 2);
+        }
     }
 
-    /**
-     * Gerador de vetores aleatórios de tamanho pré-definido. 
-     * @param tamanho Tamanho do vetor a ser criado.
-     * @return Vetor com dados aleatórios, com valores entre 1 e (tamanho/2), desordenado.
-     */
-    static int[] gerarVetor(int tamanho){
+    static int[] gerarVetor(int tamanho) {
         int[] vetor = new int[tamanho];
         for (int i = 0; i < tamanho; i++) {
-            vetor[i] = aleatorio.nextInt(1, tamanho/2);
+            vetor[i] = aleatorio.nextInt(1, tamanho / 2);
         }
-        return vetor; 
+        return vetor;
     }
-    public static void main(String[] args) {
-        int[] vec = gerarVetor(10);
-        for (int i = 0; i < vec.length; i++) {
-            System.out.print(vec[i] + " ");
-        }
-        System.out.println();
 
-        Integer[] boxedVec = Arrays.stream(vec).boxed().toArray(Integer[]::new);
-        Bubblesort<Integer> bubble = new Bubblesort<>();
-        var sorted = bubble.sort(boxedVec);
-        
-        for (int i = 0; i < sorted.length; i++) {
-            System.out.print(sorted[i] + " ");
+    public static void main(String[] args) {
+        System.out.println("Testando algoritmos...");
+
+        // Testar Código 1 (Teste Grande)
+        for (int tamanho : tamanhosTesteGrande) {
+            int[] vec = gerarVetor(tamanho);
+            System.out.println("Executando código 1 para vetor de tamanho " + tamanho);
+            codigo1(vec);
+            System.out.println("Operações: " + operacoesCodigo1 + ", Tempo: " + tempoCodigo1 + " ns");
+        }
+
+        // Testar Código 2 (Teste Grande)
+        for (int tamanho : tamanhosTesteGrande) {
+            int[] vec = gerarVetor(tamanho);
+            System.out.println("Executando código 2 para vetor de tamanho " + tamanho);
+            codigo2(vec);
+            System.out.println("Operações: " + operacoesCodigo2 + ", Tempo: " + tempoCodigo2 + " ns");
+        }
+
+        // Testar Código 3 (Teste Médio)
+        for (int tamanho : tamanhosTesteMedio) {
+            int[] vec = gerarVetor(tamanho);
+            System.out.println("Executando código 3 para vetor de tamanho " + tamanho);
+            codigo3(vec);
+            System.out.println("Operações: " + operacoesCodigo3 + ", Tempo: " + tempoCodigo3 + " ns");
+        }
+
+        // Testar Código 4 (Teste Pequeno)
+        for (int n : tamanhosTestePequeno) {
+            System.out.println("Executando código 4 para n = " + n);
+            codigo4(n);
+            System.out.println("Operações: " + operacoesCodigo4 + ", Tempo: " + tempoCodigo4 + " ns");
         }
     }
 }
